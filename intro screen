@@ -1,0 +1,57 @@
+// intro_screen.dart
+import 'package:flutter/material.dart';
+import 'login_screen.dart';
+
+class IntroScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned(top: 50, left: -50, child: CircleAvatar(radius: 80, backgroundColor: Colors.blue.shade300)),
+          Positioned(top: 100, right: -40, child: CircleAvatar(radius: 60, backgroundColor: Colors.pink.shade300)),
+          Positioned(top: 10, right: 100, child: CircleAvatar(radius: 40, backgroundColor: Colors.amber.shade200)),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(flex: 1),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  "دعمٌ وتمكينٌ لمستقبلٍ أفضل لفئاتنا الخاصة",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.pink.shade400,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Image.network(
+                "https://i.imgur.com/cOZ6wHc.png",
+                height: 250,
+              ),
+              Spacer(flex: 1),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade400,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+                  },
+                  child: Text("دعنا نبدأ", style: TextStyle(fontSize: 18)),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
