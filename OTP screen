@@ -1,0 +1,58 @@
+// otp_screen.dart
+import 'package:flutter/material.dart';
+
+class OtpScreen extends StatelessWidget {
+  final TextEditingController otpController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("التحقق من الرمز", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            Text(
+              "من فضلك أدخل رمز التحقق المرسل إلى هاتفك",
+              style: TextStyle(fontSize: 18, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 40),
+            TextField(
+              controller: otpController,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+              style: TextStyle(fontSize: 28, letterSpacing: 10),
+              decoration: InputDecoration(
+                hintText: '••••',
+                counterText: '',
+                filled: true,
+                fillColor: Colors.grey.shade200,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink.shade400,
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+              child: Text("تحقق", style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
