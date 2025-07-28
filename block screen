@@ -1,0 +1,212 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+// -------- Events --------
+abstract class NavEvent {}
+class GoToSplash extends NavEvent {}
+class GoToSignUp extends NavEvent {}
+class GoToLogin extends NavEvent {}
+class GoToOtp extends NavEvent {}
+
+// -------- States --------
+abstract class NavState {}
+class SplashScreenState extends NavState {}
+class SignUpScreenState extends NavState {}
+class LoginScreenState extends NavState {}
+class OtpScreenState extends NavState {}
+
+// -------- Bloc --------
+class NavBloc extends Bloc<NavEvent, NavState> {
+  NavBloc() : super(SplashScreenState()) {
+    on<GoToSplash>((event, emit) => emit(SplashScreenState()));
+    on<GoToSignUp>((event, emit) => emit(SignUpScreenState()));
+    on<GoToLogin>((event, emit) => emit(LoginScreenState()));
+    on<GoToOtp>((event, emit) => emit(OtpScreenState()));
+  }
+}
+
+// -------- Main --------
+void main() {
+  runApp(BlocProvider(
+    create: (_) => NavBloc()..add(GoToSplash()),
+    child: MyApp(),
+  ));
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Bloc Navigation',
+      debugShowCheckedModeBanner: false,
+      home: BlocBuilder<NavBloc, NavState>(
+        builder: (context, state) {
+          if (state is SplashScreenState) return SplashScreen();
+          if (state is SignUpScreenState) return SignUpScreen();
+          if (state is LoginScreenState) return LoginScreen();
+          if (state is OtpScreenState) return OtpScreen();
+          return Center(child: Text('Unknown State'));
+        },
+      ),
+    );
+  }
+}
+
+// -------- Splash Screen --------
+class SplashScreen extends StatefulWidget {
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 5), () {
+      context.read<NavBloc>().add(GoToSignUp());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.deepPurple,
+      body: Center(
+        child: Text('Splash Screen',
+            style: TextStyle(fontSize: 30, color: Colors.white)),
+      ),
+    );
+  }
+}
+
+// -------- Sign Up Screen --------
+class SignUpScreen extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Sign Up")),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: "Email"),
+                validator: (value) =>
+                    value != null && value.contains("@") ? null : "Invalid email",
+              ),
+              TextFormField(
+                controller: passController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Password"),
+                validator: (value) =>
+                    value != null && value.length >= 6 ? null : "Weak password",
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                child: Text("Sign Up"),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Sign Up Successful")));
+                    context.read<NavBloc>().add(GoToLogin());
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// -------- Login Screen --------
+class LoginScreen extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Login")),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: "Email"),
+                validator: (value) =>
+                    value != null && value.contains("@") ? null : "Invalid email",
+              ),
+              TextFormField(
+                controller: passController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Password"),
+                validator: (value) =>
+                    value != null && value.length >= 6 ? null : "Wrong password",
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                child: Text("Login"),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Login Successful")));
+                    context.read<NavBloc>().add(GoToOtp());
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// -------- OTP Screen --------
+class OtpScreen extends StatelessWidget {
+  final otpController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("OTP")),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: otpController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Enter OTP"),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              child: Text("Verify"),
+              onPressed: () {
+                if (otpController.text == "1234") {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("OTP Verified ✅")));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Incorrect OTP ❌")));
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
